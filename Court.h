@@ -10,6 +10,7 @@ class Court {//场地类
     private:
         type_t type;//运动的种类
         cap_t cap;//剩余容量
+        
     public:
         Court();
 };

@@ -12,7 +12,7 @@ void GymRes::Init() {//从文件中读取信息
 		password[i] = make_pair(c, d);
 //		puts("!!!");
 		id[make_pair(a, b)] = i;
-		puts("###");
+//		puts("###");
 	}
 	fflush(fp);
 	freopen("CON", "r", stdin);
@@ -71,7 +71,7 @@ int GymRes::checkPassword(string urn, string pwd) {
 	int t = id[unHash];
 	if(t) {
 		if(password[t] == pdHash) {
-			return 1;
+			return t;
 		}
 		else {
 			return 0;
@@ -122,7 +122,7 @@ void GymRes::Login() {
 //				system("pause");
 				int t = checkPassword(username, password);
 				if(t > 0) {
-					completeInfomation(t);
+					functionChoose(t);//注册时完善 
 					return;
 				}
 				else {
