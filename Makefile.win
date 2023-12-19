@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o Gymres.o
-LINKOBJ  = main.o Gymres.o
+OBJ      = main.o Gymres.o User.o
+LINKOBJ  = main.o Gymres.o User.o
 LIBS     = -L"E:/programs/Dev-Cpp/MinGW64/lib" -L"E:/programs/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -g3
 INCS     = -I"E:/programs/Dev-Cpp/MinGW64/include" -I"E:/programs/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/programs/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"E:/programs/Dev-Cpp/MinGW64/include" -I"E:/programs/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/programs/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"E:/programs/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -29,3 +29,6 @@ main.o: main.cpp
 
 Gymres.o: Gymres.cpp
 	$(CPP) -c Gymres.cpp -o Gymres.o $(CXXFLAGS)
+
+User.o: User.cpp
+	$(CPP) -c User.cpp -o User.o $(CXXFLAGS)

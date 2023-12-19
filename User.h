@@ -22,10 +22,13 @@ class User {//用户类
         Pno_t Pno;//电话
 
     public:
-        Sno_t getSno();
+        User();
+        void Input();
+		Sno_t getSno();
         type_t getType();
         college_t getCollge();
         ID_t getID();
         name_t getName();
         Pno_t getPno();
+        
 };

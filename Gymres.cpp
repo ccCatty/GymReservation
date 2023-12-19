@@ -3,16 +3,16 @@ using namespace std;
 
 
 void GymRes::Init() {//从文件中读取信息 
-	FILE *fp = freopen("CipherBook.txt", "r", stdin);
-	scanf("%d", &userNum);
+	FILE *fp = freopen("UserInfo.txt", "r", stdin);
+	scanf("%d", &userNum);//第一行一个整数userNum，表示用户数量 
+	user = (User**)malloc((userNum + 1) * sizeof(User*));
 	ll a, b, c, d;
 	for(int i = 1; i <= userNum; ++i) {
-		scanf("%lld %lld %lld %lld", &a, &b, &c, &d);
-//		puts("???");
+		scanf("%lld %lld %lld %lld", &a, &b, &c, &d);//每行前四个数字表示用户名和密码的哈希
 		password[i] = make_pair(c, d);
-//		puts("!!!");
 		id[make_pair(a, b)] = i;
-//		puts("###");
+		user[i] = new User;
+		user[i] -> Input();
 	}
 	fflush(fp);
 	freopen("CON", "r", stdin);
@@ -122,7 +122,7 @@ void GymRes::Login() {
 //				system("pause");
 				int t = checkPassword(username, password);
 				if(t > 0) {
-					functionChoose(t);//注册时完善 
+					functionChoose(user[t]); 
 					return;
 				}
 				else {
@@ -147,9 +147,12 @@ void GymRes::Login() {
 		}
 	}
 }
-void GymRes::completeInfomation(int userId) {
-	puts("完善信息");
-	Sleep(1000);
+void GymRes::functionChoose(User* usr) {
+	while(1) {
+		system("CLS");
+		cout << "你好，" << usr -> getName() << "\n";
+		Sleep(200);
+	}
 }
 
 void GymRes::typeChoose() {

@@ -1,7 +1,8 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 #include <windows.h>
 #include <conio.h>
 #include <fstream>
+#include "User.h"
 #define ll long long
 #define BASE (137)
 #define MOD1 (998244353)
@@ -29,7 +30,7 @@ class GymRes {
         void Login();
         pair<ll, ll> stringHash(string s);
         int checkPassword(string username, string password);
-        void completeInfomation(int userId);
+        void functionChoose(User* user);
         void typeChoose();
         void Register();
         bool Quit();
