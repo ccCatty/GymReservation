@@ -14,13 +14,14 @@ using namespace std;
 class GymRes {
     private:
     	int userNum;//用户数量 
-		map<int, pair<ll, ll> > password;//id到密码哈希的映射
-		map<int, pair<ll, ll> > username;//id到用户名哈希的映射 
-    	map<pair<ll, ll>, int> id;//用户名哈希到id的映射 
+		map<int, pair<ll, ll> > idToPassword;//id到密码哈希的映射
+		map<int, pair<ll, ll> > idToUsername;//id到用户名哈希的映射 
+    	map<pair<ll, ll>, int> usernameToId;//用户名哈希到id的映射 
 		User* user;//各个用户的信息
-		int* courtNum;//各种运动的信息
+		int* courtNum;//各种运动场地的数量 
 		Court** court;//各种运动的各个场地的信息
-		map<pair<TimeSeg, Court>, vector<int> > res;//对应时间和场地的用户id(一般的最多只用1个元素，只有游泳馆可能大于1) 
+		Court** idToCourt;//指针数组，用场地id找到对应场地的地址
+		map<pair<TimeSeg, int>, vector<int> > res;//对应时间和场地id的用户id(一般的最多只用1个元素，只有游泳馆可能大于1) 
 		
     public:
     	GymRes();
@@ -32,8 +33,8 @@ class GymRes {
         void functionChoose(int userId);
         void sportsChoose(int userId);
 		void courtChoose(int userId, Court* crt, int num);
-		void timeChoose(int userId, Court crt);
-		void doRes(int usrId, TimeSeg tsg, Court crt);
+		void timeChoose(int userId, int crtId);
+		void doRes(int usrId, TimeSeg tsg, int crtId);
         void Register();
         bool Quit();
 };

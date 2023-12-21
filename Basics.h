@@ -7,21 +7,8 @@
 #define SEGNUM 7
 using namespace std;
 
-char id2char(int x) {
-	if(x < 10) {
-		return x + '0';
-	}
-	return x - 10 + 'a';
-}
+char idToChar(int x);
 
-int char2id(char x) {
-	if(x >= '1' && x <= '9') {
-		return x - '0';
-	}
-	if(x >= 'a' && x <= 'z') {
-		return x - 'a' + 10;	
-	}
-	return 0;
-}
+int charToId(char x);
 
 int getCurrentSegment();

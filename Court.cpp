@@ -28,3 +28,11 @@ int Court::getCap() {
 void Court::setCap(int c) {
 	cap = c;
 }
+
+int Court::getCourtId() {
+	return courtId;
+}
+
+void Court::setCourtId(int c) {
+	courtId = c;
+}

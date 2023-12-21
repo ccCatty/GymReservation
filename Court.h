@@ -12,7 +12,8 @@ class Court {//场地类
         int sports;//运动的种类
         int ID;
         int cap;//剩余容量
-        
+        int courtId;//在记录文件中的顺序
+		 
     public:
         Court();
         int getSports();
@@ -21,6 +22,8 @@ class Court {//场地类
         void setID(int i);
         int getCap();
         void setCap(int c);
+        int getCourtId(); 
+        void setCourtId(int c);
         bool friend operator < (Court x, Court y) {
         	if(x.sports != y.sports) {
         		return x.sports < y.sports;
