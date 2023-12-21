@@ -1,6 +1,18 @@
 #include "GymRes.h"
 using namespace std;
 
+GymRes::GymRes() {
+	password.clear();
+	username.clear(); 
+	id.clear();
+	court = new Court *[SPORTSNUM + 1];
+	courtNum = new int[SPORTSNUM + 1];
+	for(int i = 0; i <= SPORTSNUM; ++i) {
+		court[i] = NULL;
+		courtNum[i] = 0;
+	}
+	res.clear();
+}
 
 void GymRes::Init() {//从文件中读取信息 
 //	puts("???");
@@ -10,23 +22,15 @@ void GymRes::Init() {//从文件中读取信息
 	ll a, b, c, d;
 	for(int i = 1; i <= userNum; ++i) {
 		scanf("%lld %lld %lld %lld", &a, &b, &c, &d);//每行前四个数字表示用户名和密码的哈希
-//		printf("%lld %lld %lld %lld\n", a, b, c, d);
-//		system("pause");
 		password[i] = make_pair(c, d);
-		puts("???");
 		username[i] = make_pair(a, b);
-		puts("!!!");
 		id[make_pair(a, b)] = i;
-		puts("###");
 		user[i].Input();
-//		string s1, s2, s3, s4, s5, s6;
-//		cin >> s1 >> s2 >> s3 >> s4 >> s5 >> s6;
 	}
 	fflush(fp);
 	fp = freopen("CourtInfo.txt", "r", stdin);
 	for(int i = 0; i < SPORTSNUM; ++i) {//对于每种运动的场地
 		scanf("%d", &courtNum[i]);//先输入这种运动场地的数量
-//		system("pause");
 		court[i] = new Court[courtNum[i]];
 		for(int j = 0; j < courtNum[i]; ++j) {//再依次输入每个场地的信息
 			court[i][j].setSports(i);
@@ -97,34 +101,12 @@ int GymRes::checkPassword(string urn, string pwd) {
 	int t = id[unHash];
 	if(t) {
 		if(password[t] == pdHash) {
-			return t;
+			return t;//密码正确，返回其id 
 		}
 		else {
-			return 0;
+			return 0;//密码错误 
 		}
 	}
-	return -1;
-//	FILE* fp = freopen("CipherBook.txt", "r", stdin);
-//	int userNum;
-//	cin >> userNum;
-//	ll a, b, c, d;
-//	for(int i = 1; i <= userNum; ++i) {
-//		cin >> a >> b >> c >> d;
-//		if(a == unHash.first && b == unHash.second) {
-//			if(c == pdHash.first && d == pdHash.second) {
-//				fflush(fp);
-//				freopen("CON", "r", stdin);
-//				return i;//登录成功 则返回在密码本中的id 
-//			}
-//			else {
-//				fflush(fp);
-//				freopen("CON", "r", stdin);
-//				return 0;//查找到用户名，密码错误 
-//			}
-//		}
-//	}
-//	fflush(fp);
-//	freopen("CON", "r", stdin);
 	return -1;//用户名不存在 
 }
 
@@ -148,7 +130,7 @@ void GymRes::Login() {
 //				system("pause");
 				int t = checkPassword(username, password);
 				if(t > 0) {
-					functionChoose(user[t]); 
+					functionChoose(t); 
 					return;
 				}
 				else {
@@ -174,11 +156,11 @@ void GymRes::Login() {
 	}
 }
 
-void GymRes::functionChoose(User usr) {
+void GymRes::functionChoose(int userId) {
 	while(1) {
 		system("CLS");
-		cout << "你好，" << usr.getUserName() << "\n";
-		if (usr.getUserType() == ADMINIS) {
+		cout << "你好，" << user[userId].getUserName() << "\n";
+		if (user[userId].getUserType() == ADMINIS) {
 			cout << "请输入你的操作：" << endl;
 			cout << "1.查看预约" << endl;
 			cout << "2.收入预估" << endl;
@@ -220,7 +202,7 @@ void GymRes::functionChoose(User usr) {
 			cin >> select;
 			if (select == 1)
 			{
-				sportsChoose();
+				sportsChoose(userId);
 			}
 			else if (select == 2)
 			{
@@ -246,7 +228,7 @@ void GymRes::functionChoose(User usr) {
 	}
 }
 
-void GymRes::sportsChoose() {//选择运动的种类
+void GymRes::sportsChoose(int userId) {//选择运动的种类
 	while(1) {
 		system("CLS");
 		puts("预约场地\n请选择运动");
@@ -256,7 +238,7 @@ void GymRes::sportsChoose() {//选择运动的种类
 		puts("0-返回");
 		char c = getch();
 		if(c >= '1' && c <= '5') {
-			courtChoose(court[c - '1'], courtNum[c - '1']);
+			courtChoose(userId, court[c - '1'], courtNum[c - '1']);
 		}
 		if(c == '0') {
 			return;
@@ -268,7 +250,7 @@ void GymRes::sportsChoose() {//选择运动的种类
 	}
 }
 
-void GymRes::courtChoose(Court* crt, int num) {
+void GymRes::courtChoose(int userId, Court* crt, int num) {
 //参数是一类运动的所有场地和场地数量, 要求显示每个场地,并有选择功能
 	while(1) {
 		system("CLS");
@@ -280,7 +262,7 @@ void GymRes::courtChoose(Court* crt, int num) {
 		puts("0-返回");
 		char c = getch();
 		if(c >= '1' && c <= '0' + num) {
-			timeChoose(crt[c - '1']);
+			timeChoose(userId, crt[c - '1']);
 		}
 		if(c == '0') {
 			return;
@@ -292,26 +274,28 @@ void GymRes::courtChoose(Court* crt, int num) {
 	}
 }
 
-void GymRes::timeChoose(Court crt) {
+void GymRes::timeChoose(int userId, Court crt) {
 	//选好了运动种类和场地, 接下来查看该场地的未来两天的预约情况
 	while(1) {
 		system("CLS");
 		cout << "预约" << sportsName[crt.getSports()] << crt.getID() << "号场地\n";
 	    std::time_t now = std::time(NULL);
 	    std::tm* localTime = std::localtime(&now);
-	    int year = localTime->tm_year;
+	    int year = localTime->tm_year + 1900;
 	    int month = localTime->tm_mon;
 	    int day = localTime->tm_mday;
 	    int hour = localTime->tm_hour;
 	    int cnt = 0;
 	    hour = hour >> 1 << 1;//所在时间段的起始时间 
-	    TimeSeg ts(year, month, day, hour); 
+	    TimeSeg ts(year, month, day, hour);
+	    TimeSeg *p = new TimeSeg[30];
 	    if(ts.getHour() >= 22) {//现在的时间已经错过了当天的所有预约时间段
 	    	ts.addOneDay();//则从第二天开始输出两天的预约记录 
 		}
 		else if(ts.getHour() >= 8) {//正在当天的可预约时段内
 			while(ts.getHour() < 22) {
-				printf("%d-%d.%d.%d %d:00-%d:00 预约人数:%d/%d\n", ++cnt, ts.getYear(), ts.getMonth(), ts.getHour(), ts.getHour() + 2, res[make_pair(ts, crt)], crt.getCap());
+				p[++cnt] = ts;
+				printf("%c - %d.%02d.%02d %02d:00-%02d:00 预约人数:%2d/%2d\n", id2char(cnt), ts.getYear(), ts.getMonth(), ts.getDay(), ts.getHour(), ts.getHour() + 2, res[make_pair(ts, crt)].size(), crt.getCap());
 				ts.addTwoHours();
 			}
 			ts.addOneDay();
@@ -319,18 +303,50 @@ void GymRes::timeChoose(Court crt) {
 		for(int i = 0; i < 2; ++i) {
 			ts.setHour(8);
 			while(ts.getHour() < 22) {
-				printf("%d, %d.%d.%d %d:00-%d:00 预约人数:%d/%d\n", ++cnt, ts.getYear(), ts.getMonth(), ts.getHour(), ts.getHour() + 2, res[make_pair(ts, crt)], crt.getCap());
+				p[++cnt] = ts;
+				printf("%c - %d.%02d.%02d %02d:00-%02d:00 预约人数:%2d/%2d\n", id2char(cnt), ts.getYear(), ts.getMonth(), ts.getDay(), ts.getHour(), ts.getHour() + 2, res[make_pair(ts, crt)].size(), crt.getCap());
 				ts.addTwoHours();
 			}
 			ts.addOneDay();
 		}
+		char c = getch();
+		int x = char2id(c);
+		if(x >= 1 && x <= cnt) {
+//			printf("选择了%c\n", id2char(x));
+			doRes(userId, p[x], crt);
+//			Sleep(1000);
+		}
+		Sleep(1000);
 		while(_kbhit()) {
 			getch();
 		}
-		Sleep(200);
 	}
 }
 
+void GymRes::doRes(int usrId, TimeSeg tsg, Court crt) {
+	system("CLS");
+	if(res[make_pair(tsg, crt)].size() >= crt.getCap()) {
+		puts("该场次预约人数已满");
+		Sleep(2000);
+		return; 
+	}
+	while(1) {
+		system("CLS");
+		cout << "预约场地: " << crt.getSports() << crt.getID() << "号场地\n";
+		printf("预约时间: %d-%02d-%02d.%02d:00-%02d:00\n", tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), tsg.getHour() + 2);
+		puts("确认预约吗?y/n");
+		char c = getch();
+		if(c == 'y' || c == 'Y') {
+			res[make_pair(tsg, crt)].push_back(usrId);
+			puts("预约成功");
+			Sleep(2000);
+			return; 
+		}
+		if(c == 'n' || c == 'N') {
+			return;
+		}
+	}
+}
 void GymRes::Register() {
 	string urn = "", pwd1 = "", pwd2 = "";
 	string Sno = "", college = "", ID = "", userName = "", Pno = "";

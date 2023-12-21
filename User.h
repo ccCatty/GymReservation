@@ -1,4 +1,5 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+#include "Basics.h"
 #define STUDENT 0//学生
 #define FACULTY 1//教职工
 #define OFFCAMP 2//校外人员

@@ -20,30 +20,20 @@ class GymRes {
 		User* user;//各个用户的信息
 		int* courtNum;//各种运动的信息
 		Court** court;//各种运动的各个场地的信息
-		map<pair<TimeSeg, Court>, int> res;//对应时间和场地的预约人数(一般的都是1或者0，只有游泳馆可能大于1) 
+		map<pair<TimeSeg, Court>, vector<int> > res;//对应时间和场地的用户id(一般的最多只用1个元素，只有游泳馆可能大于1) 
 		
     public:
-    	GymRes() {
-    		password.clear();
-    		username.clear(); 
-    		id.clear();
-			court = new Court *[SPORTSNUM + 1];
-			courtNum = new int[SPORTSNUM + 1];
-			for(int i = 0; i <= SPORTSNUM; ++i) {
-				court[i] = NULL;
-				courtNum[i] = 0;
-			}
-			res.clear(); 
-		}
+    	GymRes();
     	void Init();
         void Main();
         void Login();
         pair<ll, ll> stringHash(string s);
         int checkPassword(string username, string password);
-        void functionChoose(User user);
-        void sportsChoose();
-		void courtChoose(Court* crt, int num);
-		void timeChoose(Court crt);
+        void functionChoose(int userId);
+        void sportsChoose(int userId);
+		void courtChoose(int userId, Court* crt, int num);
+		void timeChoose(int userId, Court crt);
+		void doRes(int usrId, TimeSeg tsg, Court crt);
         void Register();
         bool Quit();
 };
