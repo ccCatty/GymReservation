@@ -5,30 +5,30 @@
 #define ADMINIS 3//管理员
 using namespace std;
 
+const string userTypeName[4] = {"学生", "教职工", "校外人员", "管理员"};
+
 class Date;
 
 class Court;
 
 class User {//用户类
-    typedef string Sno_t, college_t, name_t, ID_t, Pno_t;
-    typedef int type_t;
-    typedef map<Date*, Court*> Res;//用户的预约记录
     private:
-        Sno_t Sno;//学号
-        type_t type;//分类
-        college_t college;//学院
-        ID_t ID;//身份证号
-        name_t name;//姓名
-        Pno_t Pno;//电话
+        string Sno;//学号
+        int userType;//分类
+        string college;//学院
+        string ID;//身份证号
+        string userName;//姓名
+        string Pno;//电话
 
     public:
-        User();
-        void Input();
-		Sno_t getSno();
-        type_t getType();
-        college_t getCollge();
-        ID_t getID();
-        name_t getName();
-        Pno_t getPno();
+        User(string _Sno = "", int _userType = -1, string _college = "", string _ID = "", string _userName = "", string _Pno = "0");
+//        void Set(string _Sno, int _userType, string _college, string _ID, string _userName, string _Pno);
+		void Input();
+		string getSno();
+        int getUserType();
+        string getCollege();
+        string getID();
+        string getUserName();
+        string getPno();
         
 };

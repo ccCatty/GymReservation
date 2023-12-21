@@ -4,4 +4,4 @@ int main() {
     GymRes G;
     G.Main();
     return 0;
-} 
+}

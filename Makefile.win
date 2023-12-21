@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o Gymres.o User.o
-LINKOBJ  = main.o Gymres.o User.o
+OBJ      = main.o Gymres.o User.o Basics.o TimeSeg.o Court.o
+LINKOBJ  = main.o Gymres.o User.o Basics.o TimeSeg.o Court.o
 LIBS     = -L"E:/programs/Dev-Cpp/MinGW64/lib" -L"E:/programs/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -g3
 INCS     = -I"E:/programs/Dev-Cpp/MinGW64/include" -I"E:/programs/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/programs/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"E:/programs/Dev-Cpp/MinGW64/include" -I"E:/programs/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/programs/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"E:/programs/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -32,3 +32,12 @@ Gymres.o: Gymres.cpp
 
 User.o: User.cpp
 	$(CPP) -c User.cpp -o User.o $(CXXFLAGS)
+
+Basics.o: Basics.cpp
+	$(CPP) -c Basics.cpp -o Basics.o $(CXXFLAGS)
+
+TimeSeg.o: TimeSeg.cpp
+	$(CPP) -c TimeSeg.cpp -o TimeSeg.o $(CXXFLAGS)
+
+Court.o: Court.cpp
+	$(CPP) -c Court.cpp -o Court.o $(CXXFLAGS)
