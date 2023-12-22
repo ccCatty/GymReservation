@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include "Basics.h"
 #define SPORTSNUM 5
 #define PINGPONG 0
 #define BADMINTON 1

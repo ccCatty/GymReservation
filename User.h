@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "Basics.h"
 #define STUDENT 0//学生
 #define FACULTY 1//教职工

@@ -1,4 +1,5 @@
-
+#include "Basics.h"
+using namespace std;
 
 
 
@@ -16,6 +17,7 @@ class TimeSeg {
 		int getDay();
 		int getHour();
 		void setHour(int h);
+		TimeSeg getCurrentSegment();
 		bool friend operator < (TimeSeg x, TimeSeg y) {
 			if(x.year != y.year) {
 				return x.year < y.year;

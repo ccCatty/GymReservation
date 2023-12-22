@@ -1,7 +1,3 @@
-#include <bits/stdc++.h>
-#include <windows.h>
-#include <conio.h>
-#include <fstream>
 #include "User.h"
 #include "Court.h"
 #include "TimeSeg.h"
@@ -20,7 +16,7 @@ class GymRes {
 		User* user;//各个用户的信息
 		int* courtNum;//各种运动场地的数量 
 		Court** court;//各种运动的各个场地的信息
-		Court** idToCourt;//指针数组，用场地id找到对应场地的地址
+		Court** idToCourt;//指针数组，用场地id找到对应场地的指针 
 		map<pair<TimeSeg, int>, vector<int> > res;//对应时间和场地id的用户id(一般的最多只用1个元素，只有游泳馆可能大于1) 
 		
     public:
@@ -31,6 +27,9 @@ class GymRes {
         pair<ll, ll> stringHash(string s);
         int checkPassword(string username, string password);
         void functionChoose(int userId);
+        void showRes(int userId);
+        void cancelRes(int userId, map<pair<TimeSeg, int>, vector<int> >::iterator it);
+        void writeResInfo();
         void sportsChoose(int userId);
 		void courtChoose(int userId, Court* crt, int num);
 		void timeChoose(int userId, int crtId);

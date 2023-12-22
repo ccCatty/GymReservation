@@ -67,3 +67,14 @@ void TimeSeg::setHour(int h) {
 	hour = h;
 }
 
+TimeSeg TimeSeg::getCurrentSegment() {
+	time_t now = std::time(NULL);
+    tm* localTime = std::localtime(&now);
+    int year = localTime->tm_year + 1900;
+    int month = localTime->tm_mon;
+    int day = localTime->tm_mday;
+    int hour = localTime->tm_hour;
+    int cnt = 0;
+    hour = hour >> 1 << 1;//所在时间段的起始时间 
+    return TimeSeg(year, month, day, hour);
+}

@@ -83,9 +83,9 @@ void GymRes::Main() {
 
 	Init();
     while(1) {
-//    	system("pause");
-        system("CLS");
-        printf("欢迎来到体育馆预约系统\n1-登录\n2-注册\n3-退出");
+//    	Pause();
+        cout << "\033c";
+        printf("欢迎来到体育馆预约系统\n1 - 登录\n2 - 注册\n3 - 退出");
         int t = getch();
         if(t == '1') {
             Login();
@@ -135,7 +135,8 @@ void GymRes::Login() {
     string username, password;
     int wrongTime;
 	while(1) {
-		system("CLS");
+		fflush(stdout);
+		cout << "\033c";
     	puts("请输入用户名");
 		if(username == "") {
 			cin >> username;
@@ -148,7 +149,7 @@ void GymRes::Login() {
 			}
 			else {
 //				cout << password << "\n";
-//				system("pause");
+//				Pause();
 				int t = checkPassword(username, password);
 				if(t > 0) {
 					functionChoose(t); 
@@ -157,13 +158,14 @@ void GymRes::Login() {
 				else {
 					if(++wrongTime == 3){
 						puts("错误次数达到三次");
-						Sleep(2000);
+						Pause("按任意键返回"); 
 						return;
 					}
 					if(t == 0)
 						puts("密码错误");
 					else {
-						puts("用户名不存在"); 
+						puts("用户名不存在");
+						Pause("按任意键返回"); 
 						return;
 					}
 					Sleep(1800);
@@ -179,80 +181,194 @@ void GymRes::Login() {
 
 void GymRes::functionChoose(int userId) {
 	while(1) {
-		system("CLS");
+		cout << "\033c";
 		cout << "你好，" << user[userId].getUserName() << "\n";
-		cout << userId << "\n";
 		if (user[userId].getUserType() == ADMINIS) {
 			cout << "请输入你的操作：" << endl;
-			cout << "1.查看预约" << endl;
-			cout << "2.收入预估" << endl;
-			cout << "3." << endl;
-			cout << "4.注销登录" << endl;
-			int select = 0;
-			cin >> select;
-			if (select == 1)
-			{
+			cout << "1 - 查看预约记录" << endl;
+			cout << "2 - 收入预估" << endl;
+			cout << "3 - 注销登录" << endl;
+			char select = getch();
+			if (select == '1') {
+				showRes(userId);
+			}
+			else if (select == '2') {
 				
 			}
-			else if (select == 2)
-			{
-
-			}
-			else if (select == 3)
-			{
-
-			}
-			else if (select == 4)
-			{
-				system("cls");
+			else if (select == '3') {
+				cout << "\033c";
 				cout << "欢迎您下次光临！" << endl;
-				system("pause");
+				Pause("按任意键退出"); 
 				return;
-			}
-			else {
-				cout << "请输入正确的选项！" << endl;
-				system("pause");
 			}
 		}
 		else {
 			cout << "请输入你的操作：" << endl;
-			cout << "1.选择预约" << endl;
-			cout << "2.查看预约" << endl;
-			cout << "3.取消预约" << endl;
-			cout << "4.注销登录" << endl;
-			int select = 0;
-			cin >> select;
-			if (select == 1)
-			{
+			cout << "1 - 场地预约" << endl;
+			cout << "2 - 查看预约记录" << endl;
+			cout << "3 - 注销登录" << endl;
+			char select = getch();
+			if (select == '1') {
 				sportsChoose(userId);
 			}
-			else if (select == 2)
-			{
-
+			else if (select == '2') {
+				showRes(userId);
 			}
-			else if (select == 3)
-			{
-
-			}
-			else if (select == 4)
-			{
-				system("cls");
+			else if (select == '3') {
+				cout << "\033c";
 				cout << "欢迎您下次光临！" << endl;
-				system("pause");
+				Pause("按任意键退出"); 
 				return;
 			}
-			else {
-				cout << "请输入正确的选项！" << endl;
-				system("pause");
+		}
+		Sleep(200);
+		while(_kbhit()) {
+			getch();
+		}
+	}
+}
+
+void GymRes::showRes(int userId) {
+	map<pair<TimeSeg, int>, vector<int> >::iterator it, rec[res.size() + 1];
+	int cnt = 0;
+	int num = 0;
+	
+	if(user[userId].getUserType() == ADMINIS) {
+		while(1) {
+			cout << "\033c";
+			cnt = 0;
+			for(it = res.begin(); it != res.end(); it++) {
+				TimeSeg tsg = (it->first).first;
+				Court *crt = idToCourt[(it->first).second];
+				if(!(tsg < tsg.getCurrentSegment()) && (num = it->second.size())) {
+					rec[++cnt] = it;
+					printf("%c - 预约时间: %d-%02d-%02d.%02d:00-%02d:00\n", idToChar(cnt), tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), tsg.getHour() + 2);
+					cout << "    预约场地: " << sportsName[crt->getSports()] << crt->getID() + 1 << "号场地\n";
+					cout << "    预约用户id: ";
+					for(int i = 0; i < num; ++i) {
+						cout << it->second[i] << " ";
+					}
+					puts("");
+				}
+			}
+			puts("0 - 返回\n按下对应数字键以取消预约");
+			char c = getch();
+			int x = charToId(c);
+			if(!x) {
+				return;
+			}
+			if(x >= 1 && x <= cnt) {
+				cancelRes(userId, rec[x]); 
+			}
+			Sleep(200);
+			while(_kbhit()) {
+				getch();
 			}
 		}
-		
 	}
+	else {
+		while(1) {
+			cout << "\033c";
+			cnt = 0;
+			for(it = res.begin(); it != res.end(); it++) {
+				TimeSeg tsg = (it->first).first;
+				Court *crt = idToCourt[(it->first).second];
+				if(!(tsg < tsg.getCurrentSegment()) && (num = it->second.size()) && find(it->second.begin(), it->second.end(), userId) != it->second.end()) {
+					rec[++cnt] = it;
+					printf("%c - 预约时间: %d-%02d-%02d.%02d:00-%02d:00\n", idToChar(cnt), tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), tsg.getHour() + 2);
+					cout << "    预约场地: " << sportsName[crt->getSports()] << crt->getID() + 1 << "号场地\n";
+				}
+			}
+			puts("0 - 返回\n按下对应数字键以取消预约");
+			char c = getch();
+			int x = charToId(c);
+			if(!x) {
+				return;
+			}
+			if(x >= 1 && x <= cnt) {
+				cancelRes(userId, rec[x]); 
+			}
+			Sleep(200);
+			while(_kbhit()) {
+				getch();
+			}
+		}
+	}
+}
+
+void GymRes::cancelRes(int userId, map<pair<TimeSeg, int>, vector<int> >::iterator it) {
+	TimeSeg tsg = (it->first).first;
+	Court *crt = idToCourt[(it->first).second];
+	int num = it->second.size();
+	if(user[userId].getUserType() == ADMINIS) {
+		while(1) {
+			cout << "\033c";
+			cout << "正在取消: " << crt->getSports() << " " << crt->getID() + 1 << "号场地";
+			printf("%d-%02d-%02d.%02d:00-%02d:00时间段的预约\n", tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), tsg.getHour() + 2);
+			puts("请选择要取消的用户id\n");
+			for(int i = 0; i < num; ++i) {
+				printf("%c - %d\n", idToChar(i + 1), it->second[i]);
+			}
+			puts("0 - 取消"); 
+			char c = getch();
+			int x = charToId(c);
+			if(!x) {
+				return;
+			}
+			if(x >= 1 && x <= num) {
+				it->second.erase(it->second.begin() + x - 1);
+				writeResInfo();
+				puts("取消成功");
+				Pause("按任意键返回");
+				return; 
+			}
+		}
+	}
+	else {
+		while(1) {
+			cout << "\033c";
+			cout << "正在取消: " << crt->getSports() << " " << crt->getID() + 1 << "号场地";
+			printf("%d-%02d-%02d.%02d:00-%02d:00时间段的预约\n", tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), tsg.getHour() + 2);
+			puts("是否确定取消预约? y/n\n");
+			char c = getch();
+			if(c == 'y' || c == 'Y') {
+				it->second.erase(find(it->second.begin(), it->second.end(), userId));
+				writeResInfo();
+				puts("取消成功");
+				Pause("按任意键返回");
+				return; 
+			}
+			if(c == 'n' || c == 'N') {
+				return;
+			}
+		}
+	}
+}
+
+void GymRes::writeResInfo() {
+	FILE* fp = freopen("ResInfo.txt", "w", stdout);
+	TimeSeg tsg;
+	Court *crt;
+	printf("%d\n", res.size());//预约记录文件的第一行表示预约的数量 
+	for(map<pair<TimeSeg, int>, vector<int> >::iterator i = res.begin(); i != res.end(); i++) {
+		//对于每个预约，第一行表示时间段的开始时间 预约场地的运动种类和id
+		tsg = (i->first).first;
+		crt = idToCourt[(i->first).second];
+		printf("%d %2d %2d %2d %d\n", tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), crt->getCourtId());
+		int n = i->second.size();
+		printf("%d ", n);//第三行表示这个时间预约这个场地的人数 
+		for(int j = 0; j < n; ++j) {
+			printf("%d ", i->second[j]);//然后接这个时间预约这个时间的所有人的id 
+		}
+		puts(""); 
+	}
+	fflush(fp);
+	freopen("CON", "w", stdout);
 }
 
 void GymRes::sportsChoose(int userId) {//选择运动的种类
 	while(1) {
-		system("CLS");
+		cout << "\033c";
 		puts("预约场地\n请选择运动");
 		for(int i = 0; i < SPORTSNUM; ++i) {
 			cout << i + 1 << "-" << sportsName[i] << "\n";
@@ -275,7 +391,7 @@ void GymRes::sportsChoose(int userId) {//选择运动的种类
 void GymRes::courtChoose(int userId, Court* crt, int num) {
 //参数是一类运动的所有场地和场地数量, 要求显示每个场地,并有选择功能
 	while(1) {
-		system("CLS");
+		cout << "\033c";
 		cout << "预约" << sportsName[crt[0].getSports()] << "场地\n";
 		puts("请选择场地");
 		for(int i = 0; i < num; ++i) {
@@ -299,11 +415,11 @@ void GymRes::courtChoose(int userId, Court* crt, int num) {
 void GymRes::timeChoose(int userId, int crtId) {
 	//选好了运动种类和场地, 接下来查看该场地的未来两天的预约情况
 	while(1) {
-		system("CLS");
-//		printf("crtId = %d\n", crtId);
+		cout << "\033c";
+		fflush(stdout);
 		cout << "预约" << sportsName[idToCourt[crtId]->getSports()] << idToCourt[crtId]->getID() + 1 << "号场地\n";
-	    std::time_t now = std::time(NULL);
-	    std::tm* localTime = std::localtime(&now);
+	    time_t now = std::time(NULL);
+	    tm* localTime = std::localtime(&now);
 	    int year = localTime->tm_year + 1900;
 	    int month = localTime->tm_mon;
 	    int day = localTime->tm_mday;
@@ -339,9 +455,7 @@ void GymRes::timeChoose(int userId, int crtId) {
 			return;
 		}
 		if(x >= 1 && x <= cnt) {
-//			printf("选择了%c\n", id2char(x));
 			doRes(userId, p[x], crtId);
-//			Sleep(1000);
 		}
 		Sleep(1000);
 		while(_kbhit()) {
@@ -351,40 +465,31 @@ void GymRes::timeChoose(int userId, int crtId) {
 }
 
 void GymRes::doRes(int usrId, TimeSeg tsg, int crtId) {
-	system("CLS");
+		cout << "\033c";
 	if(res[make_pair(tsg, crtId)].size() >= idToCourt[crtId]->getCap()) {
 		puts("该场次预约人数已满");
 		Sleep(2000);
 		return; 
 	}
 	while(1) {
-		system("CLS");
-		cout << "预约场地: " << idToCourt[crtId]->getSports() << idToCourt[crtId]->getID() << "号场地\n";
+		cout << "\033c";
+		cout << "预约场地: " << sportsName[idToCourt[crtId]->getSports()] << idToCourt[crtId]->getID()+ 1 << "号场地\n";
 		printf("预约时间: %d-%02d-%02d.%02d:00-%02d:00\n", tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), tsg.getHour() + 2);
 		puts("确认预约吗?y/n");
 		char c = getch();
 		if(c == 'y' || c == 'Y') {
 			res[make_pair(tsg, crtId)].push_back(usrId);//将这次预约记录在res中 
-			FILE* fp = freopen("ResInfo.txt", "w", stdout);
-			printf("%d\n", res.size());//预约记录文件的第一行表示预约的数量 
-			for(map<pair<TimeSeg, int>, vector<int> >::iterator i = res.begin(); i != res.end(); i++) {
-				//对于每个预约，第一行表示时间段的开始时间 预约场地的运动种类和id
-				printf("%d %2d %2d %2d %d\n", tsg.getYear(), tsg.getMonth(), tsg.getDay(), tsg.getHour(), idToCourt[crtId]->getCourtId());
-				int n = i->second.size();
-				printf("%d ", n);//第三行表示这个时间预约这个场地的人数 
-				for(int j = 0; j < n; ++j) {
-					printf("%d ", i->second[j]);//然后接这个时间预约这个时间的所有人的id 
-				}
-				puts(""); 
-			}
-			fflush(fp);
-			freopen("CON", "w", stdout);
+			writeResInfo();
 			puts("预约成功");
 			Sleep(2000);
-			return; 
+			return;
 		}
 		if(c == 'n' || c == 'N') {
 			return;
+		}
+		Sleep(200);
+		while(_kbhit()) {
+			getch();
 		}
 	}
 }
@@ -394,7 +499,7 @@ void GymRes::Register() {
 	int userType = -1;
 	bool done1 = 0, done2 = 0;
 	while(1) {
-		system("CLS");
+		cout << "\033c";
 		puts("注册新用户");
 		if(urn == "") {
 			puts("请输入用户名");
@@ -479,7 +584,7 @@ void GymRes::Register() {
 				cin>>Sno; 
 			}
 //			cout << username  << "\n" << pwd1 << "\n" << Sno << "\n" << userType << "\n" << college << "\n" << ID << "\n" << userName << "\n" << Pno << "\n";
-//			system("pause");
+//			Pause();
 			User newUser(Sno, userType, college, ID, userName, Pno);
 			User *t = new User[userNum + 2];
 			for(int i = 1; i <= userNum; ++i) {
@@ -513,7 +618,7 @@ void GymRes::Register() {
 
 bool GymRes::Quit() {
 	while(1) {
-    	system("CLS");
+    	cout << "\033c";
     	puts("确认要退出吗？y/n");
     	int t = getch();
         if(t == 'y') {
